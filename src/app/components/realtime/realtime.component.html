@@ -1,0 +1,41 @@
+@if(auth.token) {
+
+  <form  class="w-100 h-100 flex flex-row flex-centered " [formGroup]="formGroup">
+      <div class="form-field-container mr-4">
+        <mat-form-field class="w-100" floatLabel="always" color="accent">
+          <mat-label> Symbol </mat-label>
+          <input [formControl]="controls.symvol" matInput>
+          <mat-hint align="end" class="helper-color-accent-400">required</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <ui-select [formControl]="controls.provider" class="w-100 mr-4"  tittle="Select provider" source="/api/instruments/v1/providers"></ui-select>
+      @if(!!controls.provider.value && !!controls.symvol.value; ) {
+        <ui-select [formControl]="controls.insrument" class="w-100 mr-4" keyName="id" labelName="description" tittle="Select instr." [params]="instrSourceparams()" source="/api/instruments/v1/instruments"></ui-select>
+      }
+
+
+      <div class="form-field-container display-container mr-4">
+
+        <div class="display-container__connect-indicator" [ngClass]="{
+          'display-container__connect-indicator_diconected': !isSocketConnected(),
+          'display-container__connect-indicator_conected': isSocketConnected()
+        }">  </div>
+
+
+        @if(displayData(); as displayData) {
+          <mat-card class="no-out-footprint w-100">
+            <mat-card-content>
+              <div><small class="small-label "> {{ displayData.date | date: 'MMM dd h:mm a' }} </small> </div>
+              <div> <small class="small-label "> bid: </small> {{ displayData.bid }}
+                    <small class="small-label "> ask: </small> {{ displayData.ask }}
+                    <small class="small-label "> last: </small> {{ displayData.last }}  </div>
+            </mat-card-content>
+          </mat-card>
+
+        }
+      </div>
+
+  </form>
+
+}

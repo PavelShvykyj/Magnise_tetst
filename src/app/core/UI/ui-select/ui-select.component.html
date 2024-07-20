@@ -1,0 +1,21 @@
+
+
+
+    <mat-form-field  floatLabel="always" color="accent" class="w-100" >
+      @if(isLoading()) {
+        <app-loader  [height]="24" matPrefix titlle=""></app-loader>
+      } @else {
+        <mat-icon matPrefix  class="mr-2"  (click)="Refresh()">refresh</mat-icon>
+       }
+      <mat-label> {{ tittle() }} </mat-label>
+      <mat-select class="mr-2"  panelClass="songlistfilter-custom-select-panel"  [formControl]="valueControl">
+          @for (option of options; track option) {
+            <mat-option  [value]="option">{{labelName() ? option[labelName()] : option}}</mat-option>
+          }
+      </mat-select>
+
+      <mat-hint align="end" class="helper-color-accent-400">required</mat-hint>
+   </mat-form-field>
+
+
+

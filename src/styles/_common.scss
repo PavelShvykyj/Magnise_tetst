@@ -1,0 +1,78 @@
+@use '@angular/material' as mat;
+@use './app-theme' as appTheme;
+$theme: appTheme.$theme;
+
+.w-100 {
+  width: 100% !important;
+}
+
+.h-100 {
+  height: 100% !important;
+}
+
+.small-label {
+  font-size: 0.9rem;
+  line-height: 1rem;
+  vertical-align: baseline;
+  font-weight: 300;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-centered {
+  align-items: center;
+  align-content: center;
+  justify-items: center;
+  justify-content: center;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.spacer {
+  margin: auto;
+}
+
+.no-out-footprint {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+
+.app-info-menu {
+  --mat-menu-container-color: #{mat.get-theme-color($theme, primary, 200)};
+  --mat-menu-container-shape: 12px;
+  --mat-menu-item-icon-color: #{mat.get-theme-color($theme, accent, default)};
+  --mat-menu-item-label-text-color: #{mat.get-theme-color($theme, accent, default)};
+  min-width: 180px !important;
+  margin-top: 12px;
+}
+
+
+.form-field-container {
+  min-width: 300px;
+  height: 78px;
+  padding: 04px, 16px, 4px, 16px;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid  mat.get-theme-color($theme, primary, 500);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  --mdc-filled-text-field-container-shape: 8px;
+
+  ::ng-deep .mat-mdc-text-field-wrapper.mdc-text-field {
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+    --mdc-filled-text-field-container-shape: 8px;
+  }
+}

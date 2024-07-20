@@ -1,0 +1,33 @@
+@use '@angular/material' as mat;
+@use './app-theme' as appTheme;
+$theme: appTheme.$theme;
+$theme-palettes: primary, accent, warn;
+$color-deeps: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900;
+
+@each $palete in $theme-palettes {
+  @each $deep in $color-deeps {
+    .helper-color-#{$palete}-#{$deep} {
+      color: mat.get-theme-color($theme, $palete, $deep) !important;
+    }
+
+    .helper-bg-#{$palete}-#{$deep} {
+      background-color: mat.get-theme-color($theme, $palete, $deep) !important;
+    }
+
+    .helper-color-#{$palete} {
+      color: mat.get-theme-color($theme, $palete) !important;
+    }
+
+    .helper-bg-#{$palete} {
+      background-color: mat.get-theme-color($theme, $palete) !important;
+    }
+
+    .helper-color-#{$palete}-#{$deep}-contrast {
+      color: mat.get-theme-color($theme, $palete, #{$deep}-contrast) !important;
+    }
+
+    .helper-bg-#{$palete}-#{$deep}-contrast {
+      background-color: mat.get-theme-color($theme, $palete, #{$deep}-contrast) !important;
+    }
+  }
+}

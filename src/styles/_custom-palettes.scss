@@ -1,0 +1,53 @@
+@use '@angular/material' as mat;
+
+$custom-gray: (
+  50:  #f7f9ff,
+  100: #f2f4ff,
+  200: #eaecf8,
+  300: #dcdeea,
+  400: #b9bbc6,
+  500: #9a9ca6,
+  600: #71737d,
+  700: #5d5f69,
+  800: #3e4049,
+  900: #1e1f28,
+
+  contrast: (
+    50:  mat.get-color-from-palette(mat.$blue-grey-palette ,900) ,
+    100: mat.get-color-from-palette(mat.$blue-grey-palette ,900),
+    200: mat.get-color-from-palette(mat.$blue-grey-palette ,900),
+    300: mat.get-color-from-palette(mat.$blue-grey-palette ,900),
+    400: mat.get-color-from-palette(mat.$blue-grey-palette ,900),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  )
+);
+
+$custom-blue: (
+  50:  #e6e9fa,
+  100: #c1c7f3,
+  200: #96a3ea,
+  300: #677fe3,
+  400: #3d62dd,
+  500: #0046d6,
+  600: #003ecb,
+  700: #0034bf,
+  800: #0029b4,
+  900: #00149d,
+
+  contrast: (
+    50:  mat.get-color-from-palette(mat.$blue-grey-palette ,900) ,
+    100: mat.get-color-from-palette(mat.$blue-grey-palette ,900),
+    200: mat.get-color-from-palette(mat.$blue-grey-palette ,900),
+    300: white,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  )
+);

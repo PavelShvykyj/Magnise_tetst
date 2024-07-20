@@ -1,0 +1,24 @@
+
+$step: 4;
+$sides-markers: l, r, t, b;
+$sides: (
+  l: left,
+  r: right,
+  t: top,
+  b: bottom,
+);
+
+
+$counts: 0, 1, 2, 3, 4, 5;
+
+@each $marker in $sides-markers {
+  @each $count in $counts {
+    .p#{$marker}-#{$count} {
+      padding-#{map-get($sides,$marker)}: #{$step * $count}px !important;
+    }
+
+    .m#{$marker}-#{$count} {
+      margin-#{map-get($sides,$marker)}: #{$step * $count}px !important;
+    }
+  }
+}

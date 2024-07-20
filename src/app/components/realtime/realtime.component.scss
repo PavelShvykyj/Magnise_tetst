@@ -1,0 +1,28 @@
+:host {
+  height: 120px;
+  padding: 8px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.display-container {
+  position: relative;
+}
+
+.display-container__connect-indicator {
+  position: absolute;
+  z-index: 5;
+  top: 12px;
+  right: 12px;
+  min-height: 12px;
+  min-width: 12px;
+  border-radius: 50%;
+}
+
+.display-container__connect-indicator_diconected {
+  background-color: #FF5722;
+}
+
+.display-container__connect-indicator_conected {
+  background-color: #4CAF50;
+}
