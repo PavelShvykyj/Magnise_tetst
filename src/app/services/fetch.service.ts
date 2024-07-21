@@ -31,14 +31,14 @@ export class FetchService {
         expires_in: 30,
         access_token: ''
       })}),
-      tap(data => {this.auth.exparatin_period = ((data as any).expires_in*1000 - 500)}),
+      tap(data => {this.auth.exparation_period = ((data as any).expires_in*1000 - 500)}),
       map(data => {return (data as any).access_token}),
       take(1),
     )
       .subscribe(
           token => {
             this.auth.token = token as string;
-            setTimeout(()=> this.Refresh(),this.auth.exparatin_period)
+            setTimeout(()=> this.Refresh(),this.auth.exparation_period)
           });
   }
 

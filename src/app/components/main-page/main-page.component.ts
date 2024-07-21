@@ -1,11 +1,12 @@
 import { Component, HostListener } from '@angular/core';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { RealtimeComponent } from '../realtime/realtime.component';
+import { CountBackComponent } from '../count-back/count-back.component';
 
 @Component({
   selector: 'app-main-page',
   standalone: true,
-  imports: [MatGridListModule,RealtimeComponent],
+  imports: [MatGridListModule,RealtimeComponent,CountBackComponent],
   templateUrl: './main-page.component.html',
   styleUrl: './main-page.component.scss'
 })

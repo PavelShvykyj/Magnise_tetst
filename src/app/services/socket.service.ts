@@ -15,8 +15,8 @@ export enum WebSocketStatusEnum {
 export class SocketService {
   ws: WebSocket;
   auth = inject(AuthStateService);
-  connected$: Subject<string> = new Subject<string>()
-  messages$: Subject<MessageEvent> = new Subject<MessageEvent>()
+  connected$: Subject<string> = new Subject<string>();
+  messages$: Subject<MessageEvent> = new Subject<MessageEvent>();
   output = '';
 
   public connect() {

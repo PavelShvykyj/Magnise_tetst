@@ -27,9 +27,9 @@
           <mat-card class="no-out-footprint w-100">
             <mat-card-content>
               <div><small class="small-label "> {{ displayData.date | date: 'MMM dd h:mm a' }} </small> </div>
-              <div> <small class="small-label "> bid: </small> {{ displayData.bid }}
-                    <small class="small-label "> ask: </small> {{ displayData.ask }}
-                    <small class="small-label "> last: </small> {{ displayData.last }}  </div>
+              <div> <small class="small-label "> bid: </small> {{ displayData.bid | number:'3.3-3'  }}
+                    <small class="small-label "> ask: </small> {{ displayData.ask | number:'3.3-3' }}
+                    <small class="small-label "> last: </small> {{ displayData.last | number:'3.3-3' }}  </div>
             </mat-card-content>
           </mat-card>
 

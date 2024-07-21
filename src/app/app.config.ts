@@ -4,12 +4,13 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { ApplicationConfig } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { AuthInterceptor } from './services/auth-interceptor';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 
 export const appConfig: ApplicationConfig = {
   providers: [provideRouter(routes),
      provideAnimationsAsync(),
-     provideHttpClient(withInterceptors([AuthInterceptor])),
+     provideHttpClient(withInterceptors([AuthInterceptor])), provideCharts(withDefaultRegisterables()),
 ]};
 
 

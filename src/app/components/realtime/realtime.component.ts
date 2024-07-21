@@ -10,8 +10,9 @@ import { AuthStateService } from '../../services/auth-state.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, map, merge, Observable, tap } from 'rxjs';
 import { SocketService } from '../../services/socket.service';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { NgClass } from '@angular/common';
+import { SharedSetingsService } from '../../services/shared-setings.service';
 
 
 export interface displayRealTimeData {
@@ -23,10 +24,9 @@ export interface displayRealTimeData {
 
 export const EMPTY_DATA : displayRealTimeData = {
   date: new Date(),
-  bid: '-',
-  ask: '-',
-  last: '-'
-
+  bid: 0,
+  ask: 0,
+  last: 0
 }
 
 @Component({
@@ -36,6 +36,7 @@ export const EMPTY_DATA : displayRealTimeData = {
     ReactiveFormsModule,
     DatePipe,
     AsyncPipe,
+    DecimalPipe,
     NgClass,
     LoaderComponent,
     UiSelectComponent,
@@ -52,6 +53,7 @@ export class RealtimeComponent implements OnInit {
   public auth = inject(AuthStateService);
   private fb = inject(NonNullableFormBuilder);
   socket = inject(SocketService)
+  settings = inject(SharedSetingsService);
   realtimeData$ : Observable<any>;
   displayData = signal<displayRealTimeData>(EMPTY_DATA)
   isSocketConnected = signal(false)
@@ -72,7 +74,7 @@ export class RealtimeComponent implements OnInit {
 
       this.controls.provider.valueChanges
         .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe(value=> {this.displayData.set(EMPTY_DATA);this.setInstumentParametrs()});
+          .subscribe(value=> {this.displayData.set(EMPTY_DATA);this.setInstumentParametrs(); this.settings.provider = value});
 
       this.controls.symvol.valueChanges
         .pipe(takeUntilDestroyed(this.destroyRef))
@@ -80,7 +82,7 @@ export class RealtimeComponent implements OnInit {
 
       this.controls.insrument.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe(value=>{this.displayData.set(EMPTY_DATA); this.RealTimeData()} );
+        .subscribe(value=>{this.displayData.set(EMPTY_DATA); this.RealTimeData(); this.settings.instrumentId = (value as any)?.id } );
 
       this.realtimeData$ = this.socket.getMessages()
         .pipe(

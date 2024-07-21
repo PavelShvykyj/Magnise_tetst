@@ -1,0 +1,17 @@
+  <mat-card class="no-out-footprint w-100">
+    <mat-card-header>
+      <mat-card-title>Count back</mat-card-title>
+      <mat-card-subtitle>Difference with the first values</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content w-100>
+      <canvas class="w-100" baseChart [data]="displayData" [options]="chartOptions" type='bar'> </canvas>
+    </mat-card-content>
+    <mat-card-actions>
+      <div class="spacer"></div>
+      @if (isLoading()) {
+        <app-loader ></app-loader>
+      }
+      <button class="ml-4" [disabled]="this.formGroup.invalid" color="accent" mat-button (click)="Refresh()">Refresh</button>
+    </mat-card-actions>
+  </mat-card>
+

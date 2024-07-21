@@ -10,9 +10,6 @@ import { catchError, map, of, take, tap } from 'rxjs';
 })
 export class AuthStateService {
   token : string = '';
-
-  exparatin_period = 3600*1000;
-
-
+  exparation_period = 3600*1000;
 }
 
