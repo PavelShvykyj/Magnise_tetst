@@ -4,6 +4,15 @@
       <mat-card-subtitle>Difference with the first values</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content w-100>
+      <div class="form-field-container mt-2 mb-2">
+        <mat-form-field class="w-100" floatLabel="always" color="accent">
+          <mat-label> Bars count </mat-label>
+          <input [formControl]="controls.barsCount" matInput>
+          <mat-hint align="end" class="helper-color-accent-400">required max. 50</mat-hint>
+        </mat-form-field>
+
+      </div>
+
       <canvas class="w-100" baseChart [data]="displayData" [options]="chartOptions" type='bar'> </canvas>
     </mat-card-content>
     <mat-card-actions>

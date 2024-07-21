@@ -1,0 +1,35 @@
+<mat-card class="no-out-footprint w-100">
+  <mat-card-header>
+    <mat-card-title>Price history</mat-card-title>
+    <mat-card-subtitle>Close values</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content w-100>
+    <div class="form-field-container mt-2 mb-2">
+    <mat-form-field class="w-100"  floatLabel="always" color="accent">
+      <mat-label>Enter a date range</mat-label>
+      <mat-date-range-input  [dateFilter]="dateRangeFilter" [formGroup]="formGroup" [rangePicker]="picker">
+        <input matStartDate formControlName="startDate" placeholder="Start date">
+        <input matEndDate formControlName="endDate" placeholder="End date">
+      </mat-date-range-input>
+
+      <mat-datepicker-toggle [disabled]="false" matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker [disabled]="false" #picker></mat-date-range-picker>
+      <mat-hint align="end" class="helper-color-accent-400">required</mat-hint>
+      @if (formGroup.controls.startDate.hasError('matStartDateInvalid')) {
+        <mat-error>Invalid start date</mat-error>
+      }
+      @if (formGroup.controls.endDate.hasError('matEndDateInvalid') || formGroup.controls.endDate.hasError('afterToday')) {
+        <mat-error>Invalid end date</mat-error>
+      }
+    </mat-form-field>
+    </div>
+    <canvas class="w-100" baseChart [data]="displayData" [options]="chartOptions" type='line'> </canvas>
+  </mat-card-content>
+  <mat-card-actions>
+    <div class="spacer"></div>
+    @if (isLoading()) {
+      <app-loader ></app-loader>
+    }
+    <button class="ml-4" [disabled]="this.formGroup.invalid" color="accent" mat-button (click)="Refresh()">Refresh</button>
+  </mat-card-actions>
+</mat-card>

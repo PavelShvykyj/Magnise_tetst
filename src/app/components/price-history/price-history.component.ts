@@ -1,64 +1,75 @@
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { SharedSetingsService } from '../../services/shared-setings.service';
-import { FetchService } from '../../services/fetch.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { take } from 'rxjs';
 import { LoaderComponent } from '../../core/UI/loader/loader.component';
 import { JsonPipe } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
-import { ChartConfiguration, ChartData } from 'chart.js';
-import moment from 'moment';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { ChartConfiguration } from 'chart.js';
+import { FetchService } from '../../services/fetch.service';
+import { SharedSetingsService } from '../../services/shared-setings.service';
+import moment from 'moment';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CountDataInput, DataSet } from '../count-back/count-back.component';
+import { take } from 'rxjs';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 
-export interface CountDataInput {
-  t: string,
-  o: string,
-  h: string,
-  l: string,
-  c: string,
+export interface DataSetLinear extends DataSet {
+  fill: boolean,
+  tension: number,
+  borderColor: string,
 }
 
-export interface DataSet {
-  label: string,
-  backgroundColor: string,
-  data: Array<number>
+export function beforeToday(control: AbstractControl): ValidationErrors | null {
+  const today = moment(new Date()).startOf("days").toDate();
+  const isError = (control.value > today);
+  const err: ValidationErrors = {afterToday: true }
+  if (isError) {
+    return err;
+  }
+  return null;
+
 }
 
 @Component({
-  selector: 'app-count-back',
+  selector: 'app-price-history',
   standalone: true,
   imports: [LoaderComponent,
     JsonPipe,
+    ReactiveFormsModule,
     BaseChartDirective,
     MatCardModule,
     MatButtonModule,
     MatFormFieldModule,
+    MatDatepickerModule,
     MatInputModule,
-    ReactiveFormsModule,
-
-
-  ],
-  templateUrl: './count-back.component.html',
-  styleUrl: './count-back.component.scss'
+    MatIconModule
+      ],
+  templateUrl: './price-history.component.html',
+  styleUrl: './price-history.component.scss'
 })
-export class CountBackComponent implements OnInit {
+export class PriceHistoryComponent implements OnInit {
   fb = inject(FormBuilder);
   settings = inject(SharedSetingsService);
   fetch = inject(FetchService);
   destroyRef = inject(DestroyRef);
 
-  displayData : ChartConfiguration<'bar'>['data'] = {
+  displayData : ChartConfiguration<'line'>['data'] = {
     labels: [],
     datasets: []
   };
 
-  public chartOptions: ChartConfiguration<'bar'>['options'] = {
+  public chartOptions: ChartConfiguration<'line'>['options'] = {
     responsive: false,
   };
+
+  today = moment(new Date()).startOf("days").toDate();
+  dateRangeFilter = (d: Date): boolean => {
+    return d <= this.today;
+  }
 
 
   isLoading = signal(false);
@@ -67,12 +78,12 @@ export class CountBackComponent implements OnInit {
     provider: this.fb.control('', Validators.required),
     interval: this.fb.control(1, Validators.required),
     periodicity: this.fb.control('minute', Validators.required),
-    barsCount: this.fb.control(20, [Validators.required, Validators.max(50)]),
+    startDate: this.fb.control(moment(new Date()).subtract(2,'d').startOf("days").toDate(), Validators.required),
+    endDate: this.fb.control(moment(new Date()).subtract(1,'d').startOf("days").toDate(), [Validators.required, beforeToday]),
+
   }
 
   formGroup = this.fb.group(this.controls);
-
-
 
   ngOnInit(): void {
     this.settings.instrumentId
@@ -96,19 +107,21 @@ export class CountBackComponent implements OnInit {
 
   }
 
-
   Refresh() {
     if (this.formGroup.invalid) {
       // set empty data
       return
     }
-    const sourceURL = '/api/bars/v1/bars/count-back';
+    const sourceURL = '/api/bars/v1/bars/date-range';
     const custed = {
       instrumentId: this.controls.instrumentId.value!.toString(),
       provider: this.controls.provider.value!.toString(),
       interval: this.controls.interval.value!.toString(),
       periodicity: this.controls.periodicity.value!.toString(),
-      barsCount: this.controls.barsCount.value!.toString(),
+      startDate: moment(this.controls.startDate.value).format('YYYY-MM-DD') ,
+      endDate: moment(this.controls.endDate.value).format('YYYY-MM-DD')
+
+
     }
 
     this.isLoading.set(true);
@@ -120,63 +133,30 @@ export class CountBackComponent implements OnInit {
   }
 
   MapDataToDisplayData(inputData: Array<CountDataInput>) {
-    const outputdata : ChartConfiguration<'bar'>['data'] = {
+    const outputdata : ChartConfiguration<'line'>['data'] = {
       labels: [],
       datasets: []
     };
 
-    const o: DataSet = {
-      label: 'o',
+
+
+    const c: DataSetLinear = {
+      label: 'close',
       backgroundColor: '#e6e9fa',
-      data: []
-    };
-
-    const h: DataSet = {
-      label: 'h',
-      backgroundColor: '#c1c7f3',
-      data: []
-    };
-
-    const l: DataSet = {
-      label: 'l',
-      backgroundColor: '#96a3ea',
-      data: []
-    };
-
-    const c: DataSet = {
-      label: 'c',
-      backgroundColor: '#677fe3',
+      fill: true,
+      tension: 0.5,
+      borderColor: '#3d62dd',
       data: []
     };
 
     inputData.forEach(el => {
-      outputdata.labels?.push(moment(el.t).format('mm'));
-      o.data.push(parseFloat(el.o));
-      h.data.push(parseFloat(el.h));
+      outputdata.labels?.push(moment(el.t).format('dd hh:mm'));
+
       c.data.push(parseFloat(el.c));
-      l.data.push(parseFloat(el.l));
-    })
 
-    o.label = o.label.concat(' ').concat(o.data[0].toString());
-    h.label = h.label.concat(' ').concat(h.data[0].toString());
-    c.label = c.label.concat(' ').concat(c.data[0].toString());
-    l.label = l.label.concat(' ').concat(l.data[0].toString());
+    });
 
-    o.data = this.Normalize(o);
-    h.data = this.Normalize(h);
-    c.data = this.Normalize(c);
-    l.data = this.Normalize(l);
-
-    outputdata.datasets.push(o);
-    outputdata.datasets.push(h);
-    outputdata.datasets.push(l);
     outputdata.datasets.push(c);
     this.displayData = {...outputdata};
-  }
-
-  Normalize(res : {data: Array<number>}) {
-    const first = res.data[0];
-    res.data.splice(0,1);
-    return res.data.map(el => el-first);
   }
 }
