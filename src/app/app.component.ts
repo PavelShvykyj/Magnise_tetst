@@ -13,15 +13,11 @@ import { filter, map } from 'rxjs';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
-  fetch = inject(FetchService);
-  socket = inject(SocketService);
+
+
 
 
   ngOnInit(): void {
-    this.fetch.Refresh();
-    setTimeout(()=>{
-      this.socket.connect();
-    }, 2000);
   }
 
 }

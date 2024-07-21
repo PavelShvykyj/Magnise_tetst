@@ -1,0 +1,31 @@
+<mat-card class="no-out-footprint">
+  <mat-card-header>
+    <mat-card-title class="helper-color-accent-500">Welcome to Magnise test task</mat-card-title>
+    <mat-card-subtitle>Please login with creds. shared in task description </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content w-100>
+    <div class="form-field-container mt-2 mb-2">
+      <mat-form-field class="w-100" floatLabel="always" color="accent">
+        <mat-label> Login </mat-label>
+        <input type="email" [formControl]="controls.login" matInput>
+        <mat-hint align="end" class="helper-color-accent-400">required</mat-hint>
+      </mat-form-field>
+    </div>
+
+    <div class="form-field-container mt-2 mb-2">
+      <mat-form-field class="w-100" floatLabel="always" color="accent">
+        <mat-label> Password </mat-label>
+        <input type="password" [formControl]="controls.password" matInput>
+        <mat-hint align="end" class="helper-color-accent-400">required</mat-hint>
+      </mat-form-field>
+    </div>
+
+  </mat-card-content>
+  <mat-card-actions>
+    <div class="spacer"></div>
+    @if (isLoading()) {
+      <app-loader ></app-loader>
+    }
+    <button class="ml-4" [disabled]="this.formGroup.invalid" color="accent" mat-button (click)="Submit()">Submit</button>
+  </mat-card-actions>
+</mat-card>

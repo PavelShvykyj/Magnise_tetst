@@ -11,34 +11,26 @@ export class FetchService {
   client = inject(HttpClient);
   auth = inject(AuthStateService)
 
-  Refresh() {
+  Refresh(loginData: {login: string, password: string}) {
     let body = new URLSearchParams();
     body.set('grant_type', 'password');
     body.set('client_id', 'app-cli');
-    body.set('username', environment.login);
-    body.set('password', environment.pass);
+    body.set('username', loginData.login);
+    body.set('password', loginData.password);
 
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/x-www-form-urlencoded');
     headers = headers.append('Accept', '*/*');
 
-    this.client.post(`/identity/realms/fintatech/protocol/openid-connect/token`,
+    return this.client.post(`/identity/realms/fintatech/protocol/openid-connect/token`,
       body.toString(), {headers: headers})
     .pipe(
-      catchError((err)=> {
-        return of({
-        expires_in: 30,
-        access_token: ''
-      })}),
       tap(data => {this.auth.exparation_period = ((data as any).expires_in*1000 - 500)}),
       map(data => {return (data as any).access_token}),
+
       take(1),
     )
-      .subscribe(
-          token => {
-            this.auth.token = token as string;
-            setTimeout(()=> this.Refresh(),this.auth.exparation_period)
-          });
+
   }
 
   getList(source: string, inputparams:Record<string,string> | undefined) : Observable<any> {

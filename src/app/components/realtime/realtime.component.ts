@@ -17,9 +17,9 @@ import { SharedSetingsService } from '../../services/shared-setings.service';
 
 export interface displayRealTimeData {
   date: Date,
-  bid: number | string,
-  ask: number | string,
-  last: number | string
+  bid: number ,
+  ask: number ,
+  last: number
 }
 
 export const EMPTY_DATA : displayRealTimeData = {
@@ -64,7 +64,7 @@ export class RealtimeComponent implements OnInit {
     insrument:this.fb.control(null,Validators.required),
   }
   private destroyRef = inject(DestroyRef);
-  formGroup = this.fb.group(this.controls)
+  formGroup = this.fb.group(this.controls);
   instrSourceparams = signal<Record<string,string>| undefined>(undefined)
 
   ngOnInit(): void {
