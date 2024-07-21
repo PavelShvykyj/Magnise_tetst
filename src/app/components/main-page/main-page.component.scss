@@ -4,3 +4,12 @@
   padding: 0px;
   margin: 0px;
 }
+
+.flex-start {
+  align-items: center;
+  justify-content: start;
+}
+
+mat-grid-tile {
+  background-color: white;
+}

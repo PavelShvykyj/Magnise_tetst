@@ -1,19 +1,17 @@
-<mat-grid-list  cols="12" [rowHeight]='headerHeght'>
-  <mat-grid-tile  class="helper-bg-accent-50 flex-centered" colspan=12>
+<mat-grid-list class="w-100" cols="12" [rowHeight]='headerHeght'>
+  <mat-grid-tile  class="helper-bg-primary-400 flex flex-centered" colspan=12>
     <app-realtime class="h-100"></app-realtime>
   </mat-grid-tile>
 </mat-grid-list>
 
-
 <mat-grid-list gutterSize="2" cols="12" [rowHeight]="tileHeght">
-  <mat-grid-tile  class="helper-bg-primary-50 mt-2" colspan=4>
-    <app-count-back class="chart-container flex flex-column flex-centered"></app-count-back>
+  <mat-grid-tile  class="mt-2" colspan=4>
+    <app-count-back class="chart-container flex flex-column flex-start"></app-count-back>
   </mat-grid-tile>
-  <mat-grid-tile  class="helper-bg-primary-50 mt-2" colspan=4>
-    <app-price-history class="chart-container flex flex-column flex-centered"></app-price-history>
+  <mat-grid-tile  class="mt-2" colspan=4>
+    <app-price-history class="chart-container flex flex-column flex-start"></app-price-history>
   </mat-grid-tile>
-  <mat-grid-tile  class="helper-bg-primary-50 mt-2" colspan=4>
-    <app-count-back class="chart-container flex flex-column flex-centered"></app-count-back>
+  <mat-grid-tile  class="mt-2" colspan=4>
+    <app-date-back class="chart-container flex flex-column flex-start"></app-date-back>
   </mat-grid-tile>
-
 </mat-grid-list>

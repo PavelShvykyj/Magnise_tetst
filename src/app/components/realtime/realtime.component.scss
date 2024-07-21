@@ -1,5 +1,6 @@
 :host {
   height: 120px;
+  width: 100%;
   padding: 8px;
   box-sizing: border-box;
   overflow-y: auto;
@@ -25,4 +26,9 @@
 
 .display-container__connect-indicator_conected {
   background-color: #4CAF50;
+}
+
+.flex-between {
+  align-items: center;
+  justify-content: space-between;
 }

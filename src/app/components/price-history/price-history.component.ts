@@ -11,7 +11,7 @@ import { SharedSetingsService } from '../../services/shared-setings.service';
 import moment from 'moment';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CountDataInput, DataSet } from '../count-back/count-back.component';
-import { take } from 'rxjs';
+import { Subject, take, takeUntil } from 'rxjs';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -56,7 +56,7 @@ export class PriceHistoryComponent implements OnInit {
   settings = inject(SharedSetingsService);
   fetch = inject(FetchService);
   destroyRef = inject(DestroyRef);
-
+  cancelation = new Subject();
   displayData : ChartConfiguration<'line'>['data'] = {
     labels: [],
     datasets: []
@@ -71,7 +71,6 @@ export class PriceHistoryComponent implements OnInit {
     return d <= this.today;
   }
 
-
   isLoading = signal(false);
   controls = {
     instrumentId: this.fb.control('', Validators.required),
@@ -80,7 +79,6 @@ export class PriceHistoryComponent implements OnInit {
     periodicity: this.fb.control('minute', Validators.required),
     startDate: this.fb.control(moment(new Date()).subtract(2,'d').startOf("days").toDate(), Validators.required),
     endDate: this.fb.control(moment(new Date()).subtract(1,'d').startOf("days").toDate(), [Validators.required, beforeToday]),
-
   }
 
   formGroup = this.fb.group(this.controls);
@@ -98,7 +96,6 @@ export class PriceHistoryComponent implements OnInit {
       this.controls.provider.setValue(value);
     })
 
-
     this.formGroup.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(()=> {
@@ -108,8 +105,12 @@ export class PriceHistoryComponent implements OnInit {
   }
 
   Refresh() {
+    this.cancelation.next(true);
     if (this.formGroup.invalid) {
-      // set empty data
+     this.displayData  = {
+        labels: [],
+        datasets: []
+      };
       return
     }
     const sourceURL = '/api/bars/v1/bars/date-range';
@@ -120,16 +121,14 @@ export class PriceHistoryComponent implements OnInit {
       periodicity: this.controls.periodicity.value!.toString(),
       startDate: moment(this.controls.startDate.value).format('YYYY-MM-DD') ,
       endDate: moment(this.controls.endDate.value).format('YYYY-MM-DD')
-
-
-    }
+    };
 
     this.isLoading.set(true);
-    this.fetch.getList(sourceURL,custed).pipe(take(1)).subscribe({
+    this.fetch.getList(sourceURL,custed).pipe(take(1),takeUntil(this.cancelation)).subscribe({
       next: res=> {this.isLoading.set(false); this.MapDataToDisplayData(res)},
       error: err=> {this.isLoading.set(false); this.displayData.labels = []; this.displayData.datasets = []},
-    })
-
+      complete: ()=> {this.isLoading.set(false)}
+    });
   }
 
   MapDataToDisplayData(inputData: Array<CountDataInput>) {
@@ -137,8 +136,6 @@ export class PriceHistoryComponent implements OnInit {
       labels: [],
       datasets: []
     };
-
-
 
     const c: DataSetLinear = {
       label: 'close',
@@ -151,9 +148,7 @@ export class PriceHistoryComponent implements OnInit {
 
     inputData.forEach(el => {
       outputdata.labels?.push(moment(el.t).format('dd hh:mm'));
-
       c.data.push(parseFloat(el.c));
-
     });
 
     outputdata.datasets.push(c);

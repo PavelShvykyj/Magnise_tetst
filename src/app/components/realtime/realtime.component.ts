@@ -141,8 +141,6 @@ export class RealtimeComponent implements OnInit {
         }
 
     this.socket.sendMessage(JSON.stringify(message));
-
-
   }
 
 }

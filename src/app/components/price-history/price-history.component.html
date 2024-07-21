@@ -23,7 +23,9 @@
       }
     </mat-form-field>
     </div>
+    @if(displayData.labels!.length > 0) {
     <canvas class="w-100" baseChart [data]="displayData" [options]="chartOptions" type='line'> </canvas>
+    }
   </mat-card-content>
   <mat-card-actions>
     <div class="spacer"></div>

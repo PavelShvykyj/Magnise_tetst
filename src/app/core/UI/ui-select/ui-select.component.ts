@@ -121,6 +121,7 @@ export class UiSelectComponent implements ControlValueAccessor, OnInit, OnDestro
   Refresh() {
     this.valueControl.setValue(null, {emitEvent: true});
     this.data = [];
+    this.options = [];
     this.isLoading.set(true);
     this.fetch.getList(this.source(),this.params())
     .pipe(take(1))

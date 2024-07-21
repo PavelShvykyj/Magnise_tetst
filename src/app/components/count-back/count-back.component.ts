@@ -3,7 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SharedSetingsService } from '../../services/shared-setings.service';
 import { FetchService } from '../../services/fetch.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { take } from 'rxjs';
+import { Subject, take, takeUntil } from 'rxjs';
 import { LoaderComponent } from '../../core/UI/loader/loader.component';
 import { JsonPipe } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
@@ -39,8 +39,6 @@ export interface DataSet {
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
-
-
   ],
   templateUrl: './count-back.component.html',
   styleUrl: './count-back.component.scss'
@@ -50,6 +48,7 @@ export class CountBackComponent implements OnInit {
   settings = inject(SharedSetingsService);
   fetch = inject(FetchService);
   destroyRef = inject(DestroyRef);
+  cancelation = new Subject();
 
   displayData : ChartConfiguration<'bar'>['data'] = {
     labels: [],
@@ -60,7 +59,6 @@ export class CountBackComponent implements OnInit {
     responsive: false,
   };
 
-
   isLoading = signal(false);
   controls = {
     instrumentId: this.fb.control('', Validators.required),
@@ -69,10 +67,7 @@ export class CountBackComponent implements OnInit {
     periodicity: this.fb.control('minute', Validators.required),
     barsCount: this.fb.control(20, [Validators.required, Validators.max(50)]),
   }
-
   formGroup = this.fb.group(this.controls);
-
-
 
   ngOnInit(): void {
     this.settings.instrumentId
@@ -87,7 +82,6 @@ export class CountBackComponent implements OnInit {
       this.controls.provider.setValue(value);
     })
 
-
     this.formGroup.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(()=> {
@@ -96,12 +90,16 @@ export class CountBackComponent implements OnInit {
 
   }
 
-
   Refresh() {
+    this.cancelation.next(true);
     if (this.formGroup.invalid) {
-      // set empty data
+      this.displayData  = {
+        labels: [],
+        datasets: []
+      };
       return
     }
+
     const sourceURL = '/api/bars/v1/bars/count-back';
     const custed = {
       instrumentId: this.controls.instrumentId.value!.toString(),
@@ -112,11 +110,11 @@ export class CountBackComponent implements OnInit {
     }
 
     this.isLoading.set(true);
-    this.fetch.getList(sourceURL,custed).pipe(take(1)).subscribe({
+    this.fetch.getList(sourceURL,custed).pipe(take(1),takeUntil(this.cancelation)).subscribe({
       next: res=> {this.isLoading.set(false); this.MapDataToDisplayData(res)},
       error: err=> {this.isLoading.set(false); this.displayData.labels = []; this.displayData.datasets = []},
+      complete: ()=> {this.isLoading.set(false)}
     })
-
   }
 
   MapDataToDisplayData(inputData: Array<CountDataInput>) {

@@ -18,7 +18,6 @@ export class FetchService {
     body.set('username', environment.login);
     body.set('password', environment.pass);
 
-
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/x-www-form-urlencoded');
     headers = headers.append('Accept', '*/*');
@@ -42,16 +41,6 @@ export class FetchService {
           });
   }
 
-  getProviders() {
-
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${this.auth.token}`
-    });
-
-   return this.client.get('/api/instruments/v1/providers',{headers});
-
-  }
-
   getList(source: string, inputparams:Record<string,string> | undefined) : Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${this.auth.token}`
@@ -65,9 +54,25 @@ export class FetchService {
       });
     }
 
-    return this.client.get(source,{headers, params}).pipe(map(res=> {return (res as any)['data']}));
+    return this.client.get(source,{headers, params})
+    .pipe(map(res=> {return (res as any)['data']}));
   }
 
+  getData(source: string, inputparams:Record<string,string> | undefined) : Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.auth.token}`
+    });
+
+    let params = new HttpParams();
+    if (!!inputparams) {
+      const keys = Object.keys(inputparams);
+      keys.forEach(key => {
+        params = params.append(key, inputparams[key]);
+      });
+    }
+
+    return this.client.get(source,{headers, params, responseType: 'text'});
+  }
 }
 
 
